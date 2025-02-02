@@ -1,65 +1,86 @@
 const express = require('express');
 const fs = require('node:fs/promises')
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const pc = require('picocolors');
 const app = express();
-const PORT = process.env.PORT ?? 36394;
+const PORT = process.env.PORT ?? 36395;
 const ERROR_MESSAGE = '<h1>ERROR AL LEER ARCHIVO html</h1>'
 const path = require("node:path")
 
+let connection;
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    port: 3306,
-    password: 'supxer',
-    database: 'dvr_facturas'
-})
+async function connectDB() {
+    connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        port: 3306,
+        password: 'supxer',
+        database: 'dvr_facturas'
+    });
+
+    console.log(pc.green("✅ Conectado a MySQL"));
+}
+
+connectDB();
 
 app.use(express.static(path.join(__dirname,'../public'))); // Para los JS
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-app.get('/invoice/register_invoice',(request, response) => {
-    fs.readFile('./html/register_invoice.html', 'utf-8')
-        .then(html => {
-            response.send(html)
-            connection.query(`SELECT * FROM lines_invoices`,(error, invoices) =>{
-                if (error) {
-                    console.log("ERROR DE SINTAXIS SQL QUERY")
-                    return;
-                }
-            
-                //console.log(invoices)
-            });
-        })
-        .catch(error => {
-            response.status(404).send(ERROR_MESSAGE+ error)
-        })
+/**
+ * ===================================
+ *      GET METHODS
+ * ===================================
+ */
+app.get('/app/register_invoice',async (request, response) => {
+    try {
+        let html = await fs.readFile('./html/register_invoice.html', 'utf-8');
+        response.status(200).send(html);
+    } catch (error) {
+        response.status(404).send(ERROR_MESSAGE+ error);
+    }
 })
 
-app.get('/invoice/show_invoices', (request, response) => {
-    fs.readFile('./html/show_invoices.html', 'utf-8')
-        .then(html => {
-            response.send(html)
-        })
-        .catch(error => {
-            response.status(404).send(ERROR_MESSAGE + error)
-        })
+app.get('/app/show_invoices', async (request, response) => {
+    try {
+        let html = await fs.readFile('./html/show_invoices.html', 'utf-8');
+        response.status(200).send(html);
+    } catch (error) {
+        response.status(404).send(ERROR_MESSAGE+ error);
+    }
 })
 
-app.get('/invoice/companys', (request, response) => {
-    fs.readFile('./html/companys.html', 'utf-8')
-        .then(html => {
-            response.send(html)
-        })
-        .catch(error => {
-            response.status(404).send(ERROR_MESSAGE + error)
-        })
+app.get('/app/companys', async (request, response) => {
+    try {
+        let html = await fs.readFile('./html/companys.html', 'utf-8');
+        response.status(200).send(html)
+    } catch (error) {
+        response.status(404).send(ERROR_MESSAGE + error)
+    }
 })
 
-app.post('/post_header_invoices',(request, response) => {
+app.get('/api/invoices', async (request, response) => {
+
+    let sql_query = `
+        SELECT type_invoice, ruc, company, customer, date_invoice, gross_amount
+          FROM invoices
+    `
+    try {
+        let [arr_invoices, arr_table_info] = await connection.query(sql_query)
+        response.status(202).json(arr_invoices);
+    } catch (error) {
+        response.status(500)
+    }
+
+})
+
+/**
+ * ===================================
+ *      POST METHODS
+ * ===================================
+ */
+
+app.post('/post_header_invoices',async (request, response) => {
     let invoice_json = request.body;
 
     /**
@@ -84,20 +105,18 @@ app.post('/post_header_invoices',(request, response) => {
     console.log("type of data sent in post =",typeof invoice_json)
     console.log(invoice_json)
 
-    connection.execute(sql_insert, values, (err, result) => {
-       if (err) {
-           response.status(500).send("ERROR EN SINTAXIS DEL INSERT O EN LOS TIPOS DE DATOS :"+err);
-           return;
-       }
-       
-       console.log(
+    try {
+        let [insert_info, table_info] = await connection.execute(sql_insert,values);
+        console.log(
             pc.green("******FACTURA INSERTADA********")
         )
-       response.status(200)
-    });
+        response.status(200)
+    } catch (error) {
+        response.status(500).send("ERROR EN SINTAXIS DEL INSERT O EN LOS TIPOS DE DATOS :" + error);
+    }
 })
 
-app.post('/post_lines_invoices',(request, response) => {
+app.post('/post_lines_invoices',async (request, response) => {
     let line_json = request.body;
 
     /**
@@ -122,48 +141,20 @@ app.post('/post_lines_invoices',(request, response) => {
     console.log("type of data sent in post =",typeof line_json)
     console.log(line_json)
 
-    connection.execute(sql_insert, values, (error) => {
-        if (error) {
-            response.status(404)
-            response.send("ERROR EN LA SINTAXIS DEL INSERT :",error)
-        }else{
-            response.status(200)
-            console.log(
-                pc.green("******LINEA INSERTADA CON EXITO******")
-            )
-        }
+    try {
+        let [insert_info, table_info] = await connection.execute(sql_insert, values);
 
-
-    })
+        console.log(pc.green("******LINEA INSERTADA CON EXITO******"))
+        response.status(200)
+    } catch (error) {
+        response.status(404)
+        response.send("ERROR EN LA SINTAXIS DEL INSERT :",error)
+    }
     
-})
-
-app.get('/api/invoices', (request, response) => {
-
-    let sql_query = `
-        SELECT type_invoice, ruc, company, customer, date_invoice, gross_amount
-          FROM invoices
-    `
-
-    connection.query(sql_query, (error, arr_invoices)=> {
-        if (error) {
-            console.log(
-                pc.red("ERROR DE SINTAXIS EN LA QUERY",error)
-                
-            )
-            response.status(500)
-
-            return;
-        }
-
-        
-        response.json(arr_invoices)
-    })
-
 })
 
 app.listen(PORT, ()=> {
     console.log(
-        pc.yellow(`LISTENING ON PORT http://localhost:${PORT}`)
+        pc.yellow(`LISTENING ON PORT http://localhost:${PORT}/app/register_invoice`)
     )
 })

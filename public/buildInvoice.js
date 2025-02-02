@@ -27,3 +27,6 @@ fetch('/api/invoices')
             `
         });
     })
+    .catch(error => {
+        console.log(error)
+    })
