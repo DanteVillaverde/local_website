@@ -1,0 +1,23 @@
+### view form invoices
+GET http://localhost:36394/invoice/register_invoice
+
+### show invoices
+GET http://localhost:36394/invoice/show_invoices
+
+
+###send new invoice to db
+POST http://localhost:36394/invoice/register_invoice
+Content-Type: application/json 
+
+{
+    "type_invoice": "B",
+    "ruc": "855412778",
+    "company": "M JACKSON",
+    "customer": "PAUL MC",
+    "date_invoice": null,
+    "gross_amount": 100,
+    "serie": null
+}
+
+### api 
+GET http://localhost:36394/api/invoices

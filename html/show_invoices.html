@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>Facturas electronicas</title>
+
+		<!-- Favicon -->
+		<link type="image/png" sizes="96x96" rel="icon" href="https://img.icons8.com/papercut/60/rocket.png">
+
+		<!-- icon menu -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+		<!-- CSS-->
+		<link rel="stylesheet" type="text/css" href="/show_invoices.css" />
+	</head>
+
+	<body>
+		<header class="main-header">
+			<label for="btn-nav" class="btn-nav"><i class="fas fa-bars"></i></label>
+			<input type="checkbox" id="btn-nav">
+			
+			<nav>
+				<ul class="navigation">
+					<li><a href="http://localhost:36394/invoice/register_invoice">Crear facturas</a></li>
+					<li><a href="http://localhost:36394/invoice/show_invoices">Ver facturas</a></li>
+					<li><a href="http://localhost:36394/invoice/xdddd">Empresas</a></li>
+				</ul>
+			</nav>
+		 
+		</header>
+
+
+		<h2>Facturas electronicas</h2>
+		<div class="table-wrapper">
+			<table class="fl-table">
+				<thead>
+					<tr>
+						<th>Document type</th>
+						<th>RUC</th>
+						<th>Company</th>
+						<th>Customer</th>
+						<th>Date Invoice</th>
+						<th>Gross amount</th>
+					</tr>
+				</thead>
+				<tbody><tbody>
+			</table>
+		</div>
+
+
+		<script src="/buildInvoice.js"></script>
+	</body>
+</html>

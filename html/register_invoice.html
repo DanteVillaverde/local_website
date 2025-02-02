@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de facturas</title>
+
+
+	<!-- Favicon -->
+	<link type="image/png" sizes="96x96" rel="icon" href="https://img.icons8.com/papercut/60/rocket.png">
+
+	<!-- icon menu -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+	
+
+    <!-- CSS-->
+    <link rel="styleSheet" type="text/css" href="/register_invoice.css"  />
+
+</head>
+<body>
+    <header class="main-header">
+      <label for="btn-nav" class="btn-nav"><i class="fas fa-bars"></i></label>
+      <input type="checkbox" id="btn-nav">
+      
+      <nav>
+        <ul class="navigation">
+            <li><a href="http://localhost:36394/invoice/register_invoice">Crear facturas</a></li>
+            <li><a href="http://localhost:36394/invoice/show_invoices">Ver facturas</a></li>
+            <li><a href="http://localhost:36394/invoice/xdddd">Empresas</a></li>
+        </ul>
+      </nav>
+   
+    </header>
+    
+    <div class="formbold-main-wrapper">
+        <!-- Author: FormBold Team -->
+        <!-- Learn More: https://formbold.com -->
+        <div class="formbold-form-wrapper">
+            <form action="https://formbold.com/s/FORM_ID" method="POST">
+                <div class="formbold-form-title">
+                    <h2 class="">Facturas</h2>
+
+                </div>
+
+                <div class="formbold-input-flex">
+                    <div>
+                    <label for="type_invoice" class="formbold-form-label">
+                        Tipo documento
+                    </label>
+                    <input
+                        type="text"
+                        name="type_invoice"
+                        id="type_invoice"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                    <div>
+                    <label for="ruc" class="formbold-form-label"> RUC </label>
+                    <input
+                        type="text"
+                        name="ruc"
+                        id="ruc"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                    
+                </div>
+
+                <div class="formbold-input-flex">
+                    <div>
+                    <label for="company" class="formbold-form-label"> Empresa </label>
+                    <input
+                        type="text"
+                        name="company"
+                        id="company"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                    <div>
+                    <label for="customer" class="formbold-form-label"> Cliente </label>
+                    <input
+                        type="text"
+                        name="customer"
+                        id="customer"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                </div>
+
+
+                <div class="formbold-input-flex">
+                    <div>
+                    <label for="serie" class="formbold-form-label"> Serie </label>
+                    <input
+                        type="text"
+                        name="serie"
+                        id="serie"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                    <div>
+                    <label for="date_invoice" class="formbold-form-label"> Fecha </label>
+                    <input
+                        type="date"
+                        name="date_invoice"
+                        id="date_invoice"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                </div>
+
+
+                <button type="submit" class="formbold-btn">Registrar</button>
+            </form>
+            
+        </div>  
+        <div class="formbold-form-wrapper">
+            <form action="https://formbold.com/s/FORM_ID" method="POST">
+                <div class="formbold-form-title">
+                    <h2 class="">Lineas de facturas</h2>
+
+                </div>
+
+                <div class="formbold-input-flex">
+                    <div>
+                    <label for="id_invoice" class="formbold-form-label">
+                        ID Factura
+                    </label>
+                    <input
+                        type="number"
+                        name="id_invoice"
+                        id="id_invoice"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                    <div>
+                    <label for="item_name" class="formbold-form-label"> Articulo </label>
+                    <input
+                        type="text"
+                        name="item_name"
+                        id="item_name"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                    
+                </div>
+
+                <div class="formbold-input-flex">
+                    <div>
+                    <label for="unit" class="formbold-form-label"> Unidad </label>
+                    <input
+                        type="text"
+                        name="unit"
+                        id="unit"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                    <div>
+                    <label for="customer" class="formbold-form-label"> Cantidad </label>
+                    <input
+                        type="number"
+                        name="quantity"
+                        id="quantity"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                </div>
+
+
+                <div class="formbold-input-flex">
+                    <div>
+                    <label for="serie" class="formbold-form-label"> Precio unitario </label>
+                    <input
+                        type="number"
+                        name="precio"
+                        id="precio"
+                        class="formbold-form-input"
+                    />
+                    </div>
+                </div>
+
+
+                <button type="submit" class="formbold-btn">Registrar</button>
+            </form>
+            
+        </div>  
+    </div>
+
+  
+
+</body>
+</html>
