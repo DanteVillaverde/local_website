@@ -153,6 +153,11 @@ app.post('/post_lines_invoices',async (request, response) => {
     
 })
 
+app.post('/post_qbe_invoices', async (request, response) => {
+    let json_qbe = request.body;
+    
+})
+
 app.listen(PORT, ()=> {
     console.log(
         pc.yellow(`LISTENING ON PORT http://localhost:${PORT}/app/register_invoice`)
