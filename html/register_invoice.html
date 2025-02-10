@@ -25,8 +25,7 @@
       <nav>
         <ul class="navigation">
             <li><a href="http://localhost:36395/app/register_invoice">Crear facturas</a></li>
-            <li><a href="http://localhost:36395/app/show_invoices">Ver facturas</a></li>
-            <li><a href="http://localhost:36395/app/xdddd">Empresas</a></li>
+            <li><a href="http://localhost:36395/qbe_invoices.html">Buscar facturas</a></li>
         </ul>
       </nav>
    
@@ -35,8 +34,12 @@
     <div class="formbold-main-wrapper">
         <!-- Author: FormBold Team -->
         <!-- Learn More: https://formbold.com -->
+
+        <!-- ********************-->
+        <!--  HEADER -->
+        <!-- ********************-->
         <div class="formbold-form-wrapper">
-            <form action="/post_header_invoices" method="POST">
+            <form id="form-header" action="/post_header_invoices" method="POST">
                 <div class="formbold-form-title">
                     <h2 class="">Facturas</h2>
 
@@ -44,68 +47,84 @@
 
                 <div class="formbold-input-flex">
                     <div>
-                    <label for="type_invoice" class="formbold-form-label">
-                        Tipo documento
-                    </label>
-                    <input
-                        type="text"
-                        name="type_invoice"
-                        id="type_invoice"
-                        class="formbold-form-input"
-                    />
+                        <label for="type_invoice" class="formbold-form-label">
+                            Tipo documento
+                        </label>
+                        <select name="type_invoice" id="type_invoice" class="formbold-form-input" required>
+                            <option value="F">Factura</option>
+                            <option value="B">Boleta</option>
+                            <option value="NC">Nota de crédito</option>
+                            <option value="NB">Nota de débito</option>
+                        </select>
                     </div>
                     <div>
-                    <label for="ruc" class="formbold-form-label"> RUC </label>
-                    <input
-                        type="text"
-                        name="ruc"
-                        id="ruc"
-                        class="formbold-form-input"
-                    />
+                        <label for="ruc" class="formbold-form-label"> RUC </label>
+                        <input
+                            type="text"
+                            name="ruc"
+                            id="ruc"
+                            class="formbold-form-input"
+                            required
+                        />
                     </div>
                     
                 </div>
 
                 <div class="formbold-input-flex">
                     <div>
-                    <label for="company" class="formbold-form-label"> Empresa </label>
-                    <input
-                        type="text"
-                        name="company"
-                        id="company"
-                        class="formbold-form-input"
-                    />
+                        <label for="company" class="formbold-form-label"> Empresa </label>
+                        <input
+                            type="text"
+                            name="company"
+                            id="company"
+                            class="formbold-form-input"
+                            required
+                        />
                     </div>
                     <div>
-                    <label for="customer" class="formbold-form-label"> Cliente </label>
-                    <input
-                        type="text"
-                        name="customer"
-                        id="customer"
-                        class="formbold-form-input"
-                    />
+                        <label for="customer" class="formbold-form-label"> Cliente </label>
+                        <input
+                            type="text"
+                            name="customer"
+                            id="customer"
+                            class="formbold-form-input"
+                            required
+                        />
                     </div>
                 </div>
 
+                <div class="formbold-input-flex">
+                    <div>
+                        <label for="code_serie" class="formbold-form-label"> Serie </label>
+                        <input
+                            type="text"
+                            name="code_serie"
+                            id="code_serie"
+                            class="formbold-form-input"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label for="number_serie" class="formbold-form-label"> Numero de serie </label>
+                        <input
+                            type="text"
+                            name="serie_number"
+                            id="serie_number"
+                            class="formbold-form-input"
+                        />
+                    </div>
+                </div>
 
                 <div class="formbold-input-flex">
                     <div>
-                    <label for="serie" class="formbold-form-label"> Serie </label>
-                    <input
-                        type="text"
-                        name="serie"
-                        id="serie"
-                        class="formbold-form-input"
-                    />
-                    </div>
-                    <div>
-                    <label for="date_invoice" class="formbold-form-label"> Fecha </label>
-                    <input
-                        type="date"
-                        name="date_invoice"
-                        id="date_invoice"
-                        class="formbold-form-input"
-                    />
+                        <label for="date_invoice" class="formbold-form-label"> Fecha </label>
+                        <input
+                            type="date"
+                            name="date_invoice"
+                            id="date_invoice"
+                            class="formbold-form-input"
+                            required
+                        />
                     </div>
                 </div>
 
@@ -114,8 +133,12 @@
             </form>
             
         </div>  
+
+        <!-- ********************-->
+        <!--  LINES -->
+        <!-- ********************-->
         <div class="formbold-form-wrapper">
-            <form action="/post_lines_invoices" method="POST">
+            <form id="form-lines" action="/post_lines_invoices" method="POST">
                 <div class="formbold-form-title">
                     <h2 class="">Lineas de facturas</h2>
 
@@ -156,7 +179,7 @@
                     />
                     </div>
                     <div>
-                    <label for="customer" class="formbold-form-label"> Cantidad </label>
+                    <label for="quantity" class="formbold-form-label"> Cantidad </label>
                     <input
                         type="number"
                         name="quantity"
@@ -169,12 +192,13 @@
 
                 <div class="formbold-input-flex">
                     <div>
-                    <label for="serie" class="formbold-form-label"> Precio unitario </label>
+                    <label for="price" class="formbold-form-label"> Precio unitario </label>
                     <input
                         type="number"
-                        name="precio"
-                        id="precio"
+                        name="price"
+                        id="price"
                         class="formbold-form-input"
+                        step="0.01"
                     />
                     </div>
                 </div>
@@ -182,11 +206,8 @@
 
                 <button type="submit" class="formbold-btn">Registrar</button>
             </form>
-            
         </div>  
     </div>
-
   
-
 </body>
 </html>

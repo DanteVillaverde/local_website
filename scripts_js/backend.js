@@ -1,27 +1,13 @@
 const express = require('express');
 const fs = require('node:fs/promises')
-const mysql = require('mysql2/promise');
 const pc = require('picocolors');
 const app = express();
 const PORT = process.env.PORT ?? 36395;
 const ERROR_MESSAGE = '<h1>ERROR AL LEER ARCHIVO html</h1>'
-const path = require("node:path")
+const path = require("node:path");
 
 let connection;
 
-async function connectDB() {
-    connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        port: 3306,
-        password: 'supxer',
-        database: 'dvr_facturas'
-    });
-
-    console.log(pc.green("✅ Conectado a MySQL"));
-}
-
-connectDB();
 
 app.use(express.static(path.join(__dirname,'../public'))); // Para los JS
 app.use(express.json());
@@ -59,18 +45,67 @@ app.get('/app/companys', async (request, response) => {
     }
 })
 
-app.get('/api/invoices', async (request, response) => {
+app.get('/app/qbe_show_invoices', async (request, response) => {
+    let invoice_data = request.query;
+    console.log('REQUEST INVOICE BACKEND =',invoice_data)
+    /**
+     * SQL Condition
+     */
+    let sql_condition = '1=1';
+    let arr_values = [];
 
-    let sql_query = `
-        SELECT type_invoice, ruc, company, customer, date_invoice, gross_amount
-          FROM invoices
-    `
-    try {
-        let [arr_invoices, arr_table_info] = await connection.query(sql_query)
-        response.status(202).json(arr_invoices);
-    } catch (error) {
-        response.status(500)
+    if (invoice_data.type_invoice) {
+        sql_condition += ` AND type_invoice = ?`;
+        arr_values.push(invoice_data.type_invoice);
+    } 
+
+    if (invoice_data.serie) {
+        sql_condition += ` AND serie = ?`;
+        arr_values.push(invoice_data.serie);
+    } 
+
+    if (invoice_data.ruc) {
+        sql_condition += ' AND ruc = ?';
+        arr_values.push(invoice_data.ruc);
+    } 
+
+    if (invoice_data.company) {
+        sql_condition += ` AND company = ?`;
+        arr_values.push(invoice_data.company);
+    } 
+
+    if (invoice_data.customer) {
+        sql_condition += ` AND customer = ?`;
+        arr_values.push(invoice_data.customer);
+    } 
+
+    if (invoice_data.date_invoice) {
+        sql_condition += ` AND date_invoice = ?`;
+        arr_values.push(invoice_data.date_invoice);
+    } 
+
+    if (sql_condition == '1=1') {
+        sql_condition = ` 1 = ?`;
+        arr_values.push(1);
     }
+    
+    let sql_query = `
+        SELECT * 
+        FROM invoices
+        WHERE ${sql_condition}
+    `;
+    
+    console.log(sql_query)
+    console.log('SQL CONDITION =',sql_condition)
+    console.log(arr_values)
+
+    try {
+        let [invoices_filtered, fields] = await connection.query(sql_query, arr_values);
+        response.json(invoices_filtered)
+    } catch (error) {
+        response.status(501).send(error)
+    }
+    
 
 })
 
@@ -84,11 +119,41 @@ app.post('/post_header_invoices',async (request, response) => {
     let invoice_json = request.body;
 
     /**
+     * MAKE CODE OF INVOICE
+     */
+    try {
+        let number_serie;
+
+        if (!invoice_json.number_serie) {
+            
+            let sql_get = `
+                SELECT COUNT(*) invoices_serie
+                FROM invoices
+                WHERE substr(serie, 1, 4) = '${invoice_json.code_serie}'
+            `
+
+            let [ 
+                [ {invoices_serie} ] , 
+                fields
+            ] = await connection.query(sql_get)
+            
+            number_serie = invoices_serie > 0 ? String(invoices_serie + 1) : '1';
+        }else{
+            number_serie = invoice_json.number_serie
+        }
+
+        invoice_json.serie = invoice_json.code_serie + '-' + number_serie;
+
+    } catch (error) {
+        console.log(error)
+    }
+
+    /**
      * INSERT INVOICE IN DB
      */
     let sql_insert = `
-       INSERT INTO invoices (type_invoice, ruc, company, customer, date_invoice)  
-       VALUES (?, ?, ?, ?, ?);
+       INSERT INTO invoices (type_invoice, ruc, company, customer, date_invoice, serie)  
+       VALUES (?, ?, ?, ?, ?, ?);
     `
 
     let values = [
@@ -97,20 +162,20 @@ app.post('/post_header_invoices',async (request, response) => {
        invoice_json.company,
        invoice_json.customer,
        invoice_json.date_invoice,
+       invoice_json.serie
     ]
 
     /**
      * debug json
      */
-    console.log("type of data sent in post =",typeof invoice_json)
+    console.log("type of data sent in HEADER post =",typeof invoice_json)
     console.log(invoice_json)
 
     try {
         let [insert_info, table_info] = await connection.execute(sql_insert,values);
-        console.log(
-            pc.green("******FACTURA INSERTADA********")
-        )
-        response.status(200)
+
+        console.log(pc.green("******FACTURA INSERTADA********"))
+        response.status(200).json({message : 'sucess'})
     } catch (error) {
         response.status(500).send("ERROR EN SINTAXIS DEL INSERT O EN LOS TIPOS DE DATOS :" + error);
     }
@@ -138,7 +203,7 @@ app.post('/post_lines_invoices',async (request, response) => {
     /**
      * debug json
      */
-    console.log("type of data sent in post =",typeof line_json)
+    console.log("type of data sent in LINE post =",typeof line_json)
     console.log(line_json)
 
     try {
@@ -147,14 +212,9 @@ app.post('/post_lines_invoices',async (request, response) => {
         console.log(pc.green("******LINEA INSERTADA CON EXITO******"))
         response.status(200)
     } catch (error) {
-        response.status(404)
-        response.send("ERROR EN LA SINTAXIS DEL INSERT :",error)
+        console.log(pc.red(error))
+        response.status(404).send("ERROR EN LA SINTAXIS DEL INSERT :",error)
     }
-    
-})
-
-app.post('/post_qbe_invoices', async (request, response) => {
-    let json_qbe = request.body;
     
 })
 

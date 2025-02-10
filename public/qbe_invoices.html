@@ -25,8 +25,7 @@
       <nav>
         <ul class="navigation">
             <li><a href="http://localhost:36395/app/register_invoice">Crear facturas</a></li>
-            <li><a href="http://localhost:36395/app/show_invoices">Ver facturas</a></li>
-            <li><a href="http://localhost:36395/app/xdddd">Empresas</a></li>
+            <li><a href="http://localhost:36395/qbe_invoices.html">Buscar facturas</a></li>
         </ul>
       </nav>
    
@@ -36,9 +35,9 @@
         <!-- Author: FormBold Team -->
         <!-- Learn More: https://formbold.com -->
         <div class="formbold-form-wrapper">
-            <form action="/post_qbe_invoices" method="POST">
+            <form id="form_qbe" action="/post_qbe_invoices" method="POST">
                 <div class="formbold-form-title">
-                    <h2 class="">Facturas</h2>
+                    <h2 class="">Buscar facturas</h2>
 
                 </div>
 
@@ -47,12 +46,12 @@
                     <label for="type_invoice" class="formbold-form-label">
                         Tipo documento
                     </label>
-                    <input
-                        type="text"
-                        name="type_invoice"
-                        id="type_invoice"
-                        class="formbold-form-input"
-                    />
+                    <select name="type_invoice" id="type_invoice" class="formbold-form-input">
+                        <option value="F">Factura</option>
+                        <option value="B">Boleta</option>
+                        <option value="NC">Nota de crédito</option>
+                        <option value="NB">Nota de débito</option>
+                    </select>
                     </div>
                     <div>
                     <label for="ruc" class="formbold-form-label"> RUC </label>
@@ -90,7 +89,7 @@
 
                 <div class="formbold-input-flex">
                     <div>
-                    <label for="serie" class="formbold-form-label"> Serie </label>
+                    <label for="serie" class="formbold-form-label"> Codigo documento </label>
                     <input
                         type="text"
                         name="serie"
@@ -110,8 +109,9 @@
                 </div>
 
 
-                <button type="submit" class="formbold-btn">Registrar</button>
+                <button type="submit" class="formbold-btn">Buscar</button>
             </form>
+            <script src="/goListInvoices.js"></script>
             
         </div> 
     </div>

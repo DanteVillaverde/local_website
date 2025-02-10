@@ -1,23 +1,23 @@
 ### view form invoices
-GET http://localhost:36394/invoice/register_invoice
+GET http://localhost:36395/invoice/register_invoice
 
 ### show invoices
-GET http://localhost:36394/invoice/show_invoices
+GET http://localhost:36395/invoice/show_invoices
 
 
 ###send new invoice to db
-POST http://localhost:36394/invoice/register_invoice
+POST http://localhost:36395/post_header_invoices
 Content-Type: application/json 
 
 {
-    "type_invoice": "B",
-    "ruc": "855412778",
-    "company": "M JACKSON",
-    "customer": "PAUL MC",
-    "date_invoice": null,
-    "gross_amount": 100,
-    "serie": null
+  "type_invoice": "F",
+  "ruc": "20606542039",
+  "company": "TEOMA",
+  "customer": "JYGC",
+  "code_serie": "F169",
+  "serie_number": "",
+  "date_invoice": "2025-01-16"
 }
 
 ### api 
-GET http://localhost:36394/api/invoices
+GET http://localhost:36395/api/invoices
